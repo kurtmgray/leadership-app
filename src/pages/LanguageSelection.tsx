@@ -18,7 +18,7 @@ const LanguageSelection: React.FC = () => {
         <h1>Evaluación de Cuatro Estilos de Liderazgo</h1>
         <h2>Four Leadership Styles Assessment</h2>
         
-        <p>Por favor selecciona tu idioma preferido:</p>
+        <p>Por favor seleccione su idioma preferido:</p>
         <p>Please select your preferred language:</p>
 
         <div className="language-buttons">
