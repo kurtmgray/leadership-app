@@ -13,7 +13,7 @@ interface AssessmentContextType {
 }
 
 const initialState: AppState = {
-  language: 'en',
+  language: 'es',
   userName: '',
   responses: [],
   currentQuestionIndex: 0,

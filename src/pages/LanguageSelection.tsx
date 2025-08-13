@@ -15,24 +15,24 @@ const LanguageSelection: React.FC = () => {
   return (
     <div className="language-selection">
       <div className="container">
-        <h1>Four Leadership Styles Assessment</h1>
-        <h2>Evaluación de Cuatro Estilos de Liderazgo</h2>
+        <h1>Evaluación de Cuatro Estilos de Liderazgo</h1>
+        <h2>Four Leadership Styles Assessment</h2>
         
-        <p>Please select your preferred language:</p>
         <p>Por favor selecciona tu idioma preferido:</p>
+        <p>Please select your preferred language:</p>
 
         <div className="language-buttons">
-          <button 
-            className="language-btn english"
-            onClick={() => handleLanguageSelect('en')}
-          >
-            English
-          </button>
           <button 
             className="language-btn spanish"
             onClick={() => handleLanguageSelect('es')}
           >
             Español
+          </button>
+          <button 
+            className="language-btn english"
+            onClick={() => handleLanguageSelect('en')}
+          >
+            English
           </button>
         </div>
       </div>
