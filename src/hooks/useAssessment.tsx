@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import type { AppState, Language, UserResponse } from '../types';
+import React, { createContext, useContext, useReducer, useEffect, type ReactNode } from 'react';
+import type { AppState, Language } from '../types';
 import { saveToStorage, getFromStorage } from '../utils/storage';
 
 interface AssessmentContextType {
