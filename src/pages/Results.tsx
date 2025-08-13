@@ -26,12 +26,34 @@ const Results: React.FC = () => {
           backgroundColor: '#ffffff',
           scale: 2,
         });
+
+        const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
         
-        canvas.toBlob((blob) => {
-          if (blob) {
-            saveAs(blob, `${state.userName}-leadership-results.png`);
-          }
-        });
+        if (isMobileDevice) {
+          // Mobile: Use JPEG and native sharing
+          canvas.toBlob((blob) => {
+            if (blob) {
+              if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], `${state.userName}-leadership-results.jpg`, { type: 'image/jpeg' })] })) {
+                const file = new File([blob], `${state.userName}-leadership-results.jpg`, { type: 'image/jpeg' });
+                navigator.share({
+                  files: [file],
+                  title: 'Leadership Assessment Results'
+                }).catch(() => {
+                  saveAs(blob, `${state.userName}-leadership-results.jpg`);
+                });
+              } else {
+                saveAs(blob, `${state.userName}-leadership-results.jpg`);
+              }
+            }
+          }, 'image/jpeg', 0.9);
+        } else {
+          // Desktop: Use PNG
+          canvas.toBlob((blob) => {
+            if (blob) {
+              saveAs(blob, `${state.userName}-leadership-results.png`);
+            }
+          }, 'image/png');
+        }
       } catch (error) {
         console.error('Error exporting results:', error);
       }
@@ -48,23 +70,36 @@ const Results: React.FC = () => {
   };
 
   const getStyleForColor = (color: string) => {
-    const style = leadershipStyles.find(s => s.color === color);
+    const style = leadershipStyles.find((s) => s.color === color);
     return style ? style[state.language] : null;
+  };
+
+  const getOrdinalRank = (rank: number) => {
+    const ordinals = ['1st', '2nd', '3rd', '4th'];
+    return ordinals[rank - 1] || `${rank}th`;
   };
 
   const text = {
     en: {
-      title: `${state.userName || 'Your'} Leadership Style Results`,
+      title: `${
+        state.userName
+          ? `${state.userName}'s Leadership Style Results`
+          : `Your Leadership Style Results`
+      }`,
       export: 'Save Results',
       restart: 'Take Again',
-      score: 'Score:'
+      score: 'Score:',
     },
     es: {
-      title: `${state.userName ? `Resultados de Estilo de Liderazgo de ${state.userName}` : 'Tus Resultados de Estilo de Liderazgo'}`,
+      title: `${
+        state.userName
+          ? `Resultados de Estilo de Liderazgo de ${state.userName}`
+          : 'Tus Resultados de Estilo de Liderazgo'
+      }`,
       export: 'Guardar Resultados',
       restart: 'Tomar de Nuevo',
-      score: 'Puntaje:'
-    }
+      score: 'Puntaje:',
+    },
   };
 
   const t = text[state.language];
@@ -90,7 +125,7 @@ const Results: React.FC = () => {
               const styleInfo = getStyleForColor(result.color);
               return (
                 <div key={result.color} className={getColorClass(result.color)}>
-                  <div className="rank">#{index + 1}</div>
+                  <div className="rank">{getOrdinalRank(index + 1)}</div>
                   <div className="score-display">
                     {t.score} {result.score}
                   </div>

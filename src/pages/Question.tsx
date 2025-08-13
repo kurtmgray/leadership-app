@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
 import { useAssessment } from '../hooks/useAssessment';
 import { questions, questionHeader, questionContext } from '../data/questions';
 import { isAssessmentComplete } from '../utils/scoring';
@@ -13,6 +13,7 @@ const Question: React.FC = () => {
   const questionId = parseInt(id || '1');
   const question = questions.find((q) => q.id === questionId);
   const [score, setScore] = useState<string>('');
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (questionId < 1 || questionId > 25 || !question) {
@@ -28,11 +29,24 @@ const Question: React.FC = () => {
     } else {
       setScore('');
     }
+
+    // Force input to be interactive and auto-focus after navigation
+    const timer = setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.style.pointerEvents = 'auto';
+        inputRef.current.style.touchAction = 'manipulation';
+        // Try both focus and click to activate keyboard on mobile
+        inputRef.current.focus();
+        inputRef.current.click();
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
   }, [questionId, question, navigate, state.responses]);
 
   const handleScoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
+
     if (value === '') {
       setScore('');
       return;
@@ -41,6 +55,11 @@ const Question: React.FC = () => {
     if (/^([1-9]|10)$/.test(value)) {
       setScore(value);
     }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit();
   };
 
   const handleSubmit = () => {
@@ -59,6 +78,7 @@ const Question: React.FC = () => {
         }
       } else {
         navigate(`/question/${questionId + 1}`);
+        // Auto-focus will be handled by the useEffect after navigation
       }
     }
   };
@@ -95,13 +115,18 @@ const Question: React.FC = () => {
 
         <div className="content">
           <div className="question-context">
+            <MessageSquareQuote className="quote-icon quote-start" size={20} />
             {questionContext[state.language]}
           </div>
 
-          <div className="question-text">{question[state.language]}</div>
+          <div className="question-text">
+            {question[state.language]}
+            {/* <Quote className="quote-icon quote-end" size={20} /> */}
+          </div>
 
-          <div className="score-input-section">
+          <form className="score-input-section" onSubmit={handleFormSubmit}>
             <input
+              ref={inputRef}
               type="tel"
               inputMode="numeric"
               pattern="[0-9]*"
@@ -112,11 +137,7 @@ const Question: React.FC = () => {
               maxLength={2}
             />
 
-            <button
-              onClick={handleSubmit}
-              className="submit-btn"
-              disabled={!canSubmit}
-            >
+            <button type="submit" className="submit-btn" disabled={!canSubmit}>
               {questionId === 25
                 ? state.language === 'en'
                   ? 'See Results'
@@ -125,7 +146,7 @@ const Question: React.FC = () => {
                 ? 'Next'
                 : 'Siguiente'}
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
