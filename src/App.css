@@ -11,10 +11,45 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(140, 140, 140, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 80% 20%, rgba(160, 160, 160, 0.1) 0%, transparent 60%),
+    radial-gradient(circle at 40% 40%, rgba(150, 150, 150, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #fafafa 0%, #e8e8e8 100%);
+  background-attachment: fixed;
+  position: relative;
   color: #2c3e50;
   line-height: 1.6;
   font-weight: 400;
+  display: flex;
+  flex-direction: column;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.08;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    );
+  pointer-events: none;
+  z-index: -1;
 }
 
 .App {
@@ -29,6 +64,13 @@ body {
   padding: 1rem;
   flex: 1;
   width: 100%;
+}
+
+.container .title {
+  display: flex;
+flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 /* Header styles */
@@ -69,28 +111,17 @@ body {
 
 /* Language Selection */
 .language-selection {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  text-align: center;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  min-height: 100dvh;
+  width: 100%;
+  padding: 3rem 1rem;
 }
 
 .language-selection .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   max-width: 600px;
-  width: 90%;
-  padding: 2rem;
+  width: 100%;
   margin: 0 auto;
+  text-align: center;
 }
 
 .language-selection h1 {
@@ -163,16 +194,10 @@ body {
 
 /* Name Entry */
 .name-entry {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  min-height: 100dvh;
+  width: 100%;
+  padding: 1rem;
 }
 
 .name-entry .header {
@@ -183,20 +208,14 @@ body {
 }
 
 .name-entry .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   max-width: 500px;
-  width: 90%;
-  padding: 2rem;
+  width: 100%;
   margin: 0 auto;
 }
 
 .name-entry .content {
   text-align: center;
   width: 100%;
-  max-width: 400px;
 }
 
 .name-entry h1 {
@@ -318,10 +337,11 @@ body {
   padding: 1rem;
   max-width: 600px;
   width: 100%;
-  margin: 24px auto;
+  margin: 3rem auto 24px auto;
   text-align: center;
   overflow: hidden; /* Prevent any scrolling */
   min-height: 0; /* Allow flex to shrink properly */
+  cursor: pointer; /* Indicate clickable area */
 }
 
 .question-context {
@@ -426,11 +446,8 @@ body {
   }
   
   .question-page .content {
-    margin-top: 80px; /* Account for fixed header height */
-    padding-top: 0;
-    /* Force reflow after keyboard changes */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    padding-top: 140px; /* Fixed padding instead of dynamic margin */
+    margin-top: 0;
   }
   
   /* Ensure input remains interactive after keyboard changes */
@@ -457,8 +474,8 @@ body {
   }
   
   .question-page .content {
-    padding: 0.5rem 1rem;
-    margin-top: 60px; /* Smaller header height when keyboard is open */
+    padding: 120px 1rem 0.5rem 1rem; /* Fixed padding for all scenarios */
+    margin-top: 0;
   }
   
   .question-text {
@@ -480,27 +497,16 @@ body {
 /* Results Page */
 .results-page {
   min-height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
+  min-height: 100dvh;
+  width: 100%;
+  padding: 1rem;
   overflow-y: auto;
 }
 
 .results-page .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   max-width: 800px;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
-  padding: 1rem;
-  flex: 1;
-  min-height: min-content;
 }
 
 .results-page .header {
@@ -642,7 +648,7 @@ body {
 /* Desktop styles */
 @media (min-width: 768px) {
   .container {
-    padding: 2rem;
+    padding: 0;
   }
   
   .leadership-results {

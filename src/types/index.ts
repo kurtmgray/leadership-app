@@ -37,7 +37,6 @@ export interface AppState {
   language: Language;
   userName: string;
   responses: UserResponse[];
-  currentQuestionIndex: number;
   isCompleted: boolean;
 }
 

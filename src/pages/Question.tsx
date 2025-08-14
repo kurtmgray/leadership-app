@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
 import { useAssessment } from '../hooks/useAssessment';
 import { questions, questionHeader, questionContext } from '../data/questions';
-import { isAssessmentComplete } from '../utils/scoring';
 
 const Question: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,16 +29,14 @@ const Question: React.FC = () => {
       setScore('');
     }
 
-    // Force input to be interactive and auto-focus after navigation
+    // Simplified focus logic with layout stability check
     const timer = setTimeout(() => {
-      if (inputRef.current) {
+      if (inputRef.current && document.hasFocus()) {
         inputRef.current.style.pointerEvents = 'auto';
         inputRef.current.style.touchAction = 'manipulation';
-        // Try both focus and click to activate keyboard on mobile
         inputRef.current.focus();
-        inputRef.current.click();
       }
-    }, 150);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [questionId, question, navigate, state.responses]);
@@ -67,15 +64,8 @@ const Question: React.FC = () => {
     if (scoreNum >= 1 && scoreNum <= 10) {
       setResponse(questionId, scoreNum);
 
-      const updatedResponses = [
-        ...state.responses.filter((r) => r.questionId !== questionId),
-        { questionId, score: scoreNum },
-      ];
-
       if (questionId === 25) {
-        if (isAssessmentComplete(updatedResponses)) {
-          navigate('/results');
-        }
+        navigate('/results');
       } else {
         navigate(`/question/${questionId + 1}`);
         // Auto-focus will be handled by the useEffect after navigation
@@ -88,6 +78,12 @@ const Question: React.FC = () => {
       navigate('/name');
     } else {
       navigate(`/question/${questionId - 1}`);
+    }
+  };
+
+  const handleContentClick = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
   };
 
@@ -113,7 +109,7 @@ const Question: React.FC = () => {
           <div className="progress-counter">{questionId}/25</div>
         </div>
 
-        <div className="content">
+        <div className="content" onClick={handleContentClick}>
           <div className="question-context">
             <MessageSquareQuote className="quote-icon quote-start" size={20} />
             {questionContext[state.language]}

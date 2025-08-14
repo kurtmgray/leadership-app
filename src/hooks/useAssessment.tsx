@@ -7,7 +7,6 @@ interface AssessmentContextType {
   setLanguage: (language: Language) => void;
   setUserName: (name: string) => void;
   setResponse: (questionId: number, score: number) => void;
-  setCurrentQuestion: (index: number) => void;
   completeAssessment: () => void;
   resetAssessment: () => void;
 }
@@ -16,7 +15,6 @@ const initialState: AppState = {
   language: 'es',
   userName: '',
   responses: [],
-  currentQuestionIndex: 0,
   isCompleted: false,
 };
 
@@ -24,7 +22,6 @@ type Action =
   | { type: 'SET_LANGUAGE'; payload: Language }
   | { type: 'SET_USER_NAME'; payload: string }
   | { type: 'SET_RESPONSE'; payload: { questionId: number; score: number } }
-  | { type: 'SET_CURRENT_QUESTION'; payload: number }
   | { type: 'COMPLETE_ASSESSMENT' }
   | { type: 'RESET_ASSESSMENT' }
   | { type: 'LOAD_FROM_STORAGE'; payload: Partial<AppState> };
@@ -41,8 +38,6 @@ const assessmentReducer = (state: AppState, action: Action): AppState => {
         ...state,
         responses: [...existingResponses, { questionId: action.payload.questionId, score: action.payload.score }]
       };
-    case 'SET_CURRENT_QUESTION':
-      return { ...state, currentQuestionIndex: action.payload };
     case 'COMPLETE_ASSESSMENT':
       return { ...state, isCompleted: true };
     case 'RESET_ASSESSMENT':
@@ -84,9 +79,6 @@ export const AssessmentProvider: React.FC<{ children: ReactNode }> = ({ children
     dispatch({ type: 'SET_RESPONSE', payload: { questionId, score } });
   };
 
-  const setCurrentQuestion = (index: number) => {
-    dispatch({ type: 'SET_CURRENT_QUESTION', payload: index });
-  };
 
   const completeAssessment = () => {
     dispatch({ type: 'COMPLETE_ASSESSMENT' });
@@ -102,7 +94,6 @@ export const AssessmentProvider: React.FC<{ children: ReactNode }> = ({ children
       setLanguage,
       setUserName,
       setResponse,
-      setCurrentQuestion,
       completeAssessment,
       resetAssessment,
     }}>
